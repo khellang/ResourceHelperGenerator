@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceHelperGenerator", "src\ResourceHelperGenerator\ResourceHelperGenerator.csproj", "{66CF4FA8-D5A1-4CDC-A8AB-41F733EC3412}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceHelperGenerator.TestProject", "src\ResourceHelperGenerator.TestProject\ResourceHelperGenerator.TestProject.csproj", "{57BF2FDA-1F54-4C79-829D-AA2A3A9549C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{CCE6C8D7-946D-446C-97B7-0BA754DCCAF9}"
+	ProjectSection(SolutionItems) = preProject
+		build\ResourceHelperGenerator.targets = build\ResourceHelperGenerator.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66CF4FA8-D5A1-4CDC-A8AB-41F733EC3412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66CF4FA8-D5A1-4CDC-A8AB-41F733EC3412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66CF4FA8-D5A1-4CDC-A8AB-41F733EC3412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66CF4FA8-D5A1-4CDC-A8AB-41F733EC3412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57BF2FDA-1F54-4C79-829D-AA2A3A9549C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57BF2FDA-1F54-4C79-829D-AA2A3A9549C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57BF2FDA-1F54-4C79-829D-AA2A3A9549C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57BF2FDA-1F54-4C79-829D-AA2A3A9549C2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
