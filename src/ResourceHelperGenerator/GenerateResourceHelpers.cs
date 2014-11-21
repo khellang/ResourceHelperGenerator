@@ -34,29 +34,29 @@ namespace ResourceHelperGenerator
         {
             try
             {
-                var resourceFiles = Resources.Select(x => x.GetMetadata("FullPath"));
-
-                var projectPath = ProjectFile;
+                var resourceFiles = Resources.Select(x => x.GetMetadata("FullPath")).ToList();
+                if (!resourceFiles.Any())
+                {
+                    Log.LogMessage("No resource files found.");
+                    return true;
+                }
 
                 if (string.IsNullOrEmpty(Namespace))
                 {
-                    Namespace = Path.GetFileNameWithoutExtension(projectPath);
+                    Namespace = Path.GetFileNameWithoutExtension(ProjectFile);
                 }
 
-                Log.LogMessage("Using namespace '{0}'", Namespace);
+                Log.LogMessage("Generating helpers using namespace '{0}'", Namespace);
 
-                var document = XDocument.Load(projectPath);
+                var document = XDocument.Load(ProjectFile);
 
                 var shouldSave = false;
 
                 foreach (var resourceFile in resourceFiles)
                 {
-                    Log.LogMessage("Generating helper for {0}...", Path.GetFileName(resourceFile));
+                    Log.LogMessage("Generating helper for '{0}'...", Path.GetFileName(resourceFile));
 
-                    if (!TryGenerateResourceFile(resourceFile, Namespace, Internalize))
-                    {
-                        continue;
-                    }
+                    GenerateResourceHelper(resourceFile, Namespace, Internalize);
 
                     var hasAddedFiles = AddDesignerFileToProject(document, resourceFile);
 
@@ -65,98 +65,95 @@ namespace ResourceHelperGenerator
 
                 if (shouldSave)
                 {
-                    document.Save(projectPath);
+                    document.Save(ProjectFile);
                 }
+
+                return true;
             }
             catch (Exception e)
             {
                 Log.LogErrorFromException(e);
+                return false;
             }
-
-            return !Log.HasLoggedErrors;
         }
 
-        private bool AddDesignerFileToProject(XContainer document, string resourceFile)
+        private bool AddDesignerFileToProject(XContainer document, string resourcePath)
         {
-            var hasAddedFiles = false;
+            var compileElements = document.Descendants(MsBuildNamespace + "Compile").ToList();
+
+            var hasDesignerFile = compileElements.Any(element => DependsOnResourceFile(element, resourcePath));
+            if (hasDesignerFile)
+            {
+                return false;
+            }
 
             foreach (var embeddedResource in document.Descendants(MsBuildNamespace + "EmbeddedResource"))
             {
-                var path = embeddedResource.Attribute("Include").Value;
+                var projectResourcePath = embeddedResource.Attribute("Include").Value;
 
-                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(path);
+                var resourceDirectory = Path.GetDirectoryName(projectResourcePath);
 
-                var designerFileName = string.Concat(fileNameWithoutExtension, ".Designer.cs");
-
-                var compileElements = document.Descendants(MsBuildNamespace + "Compile").ToList();
-
-                var elementExists = compileElements
-                    .Select(x => x.Attribute("Include").Value)
-                    .Any(x => x.EndsWith(designerFileName));
-
-                if (elementExists)
-                {
-                    break;
-                }
-
-                var directory = Path.GetDirectoryName(path);
-                if (string.IsNullOrEmpty(directory))
+                if (string.IsNullOrEmpty(resourceDirectory) || !resourcePath.EndsWith(projectResourcePath))
                 {
                     continue;
                 }
 
-                if (!resourceFile.EndsWith(path))
-                {
-                    continue;
-                }
+                var resourceFileName = Path.GetFileNameWithoutExtension(projectResourcePath);
 
-                var fileName = Path.GetFileName(path);
+                var designerFileName = string.Concat(resourceFileName, ".Designer.cs");
 
-                var designerFilePath = Path.Combine(directory, designerFileName);
+                var designerFilePath = Path.Combine(resourceDirectory, designerFileName);
 
-                Log.LogMessage("Adding designer file '{0}' to project...", designerFilePath);
+                Log.LogMessage("Adding designer file '{0}' to project...", designerFileName);
 
+                // Just pick the first Compile element and add the file to its parent.
                 var parent = compileElements.Select(x => x.Parent).First();
+
+                var fileName = Path.GetFileName(projectResourcePath);
 
                 var compileElement = CreateCompileElement(designerFilePath, fileName);
 
                 parent.Add(compileElement);
 
-                hasAddedFiles = true;
+                return true;
             }
 
-            return hasAddedFiles;
+            return false;
+        }
+
+        private static bool DependsOnResourceFile(XContainer element, string resourceFile)
+        {
+            var dependentUponElement = element
+                .Descendants(MsBuildNamespace + "DependentUpon")
+                .FirstOrDefault();
+
+            return dependentUponElement != null && resourceFile.EndsWith(dependentUponElement.Value);
         }
 
         private static XElement CreateCompileElement(string designerFilePath, string resourceFileName)
         {
             var compileElement = new XElement(MsBuildNamespace + "Compile");
+
+            compileElement.Add(new XElement(MsBuildNamespace + "AutoGen") { Value = "True" });
+            compileElement.Add(new XElement(MsBuildNamespace + "DesignTime") { Value = "True" });
+            compileElement.Add(new XElement(MsBuildNamespace + "DependentUpon") { Value = resourceFileName });
             compileElement.SetAttributeValue("Include", designerFilePath);
-
-            var autoGenElement = new XElement(MsBuildNamespace + "AutoGen");
-            autoGenElement.SetValue("True");
-            compileElement.Add(autoGenElement);
-
-            var designTimeElement = new XElement(MsBuildNamespace + "DesignTime");
-            designTimeElement.SetValue("True");
-            compileElement.Add(designTimeElement);
-
-            var dependentUponElement = new XElement(MsBuildNamespace + "DependentUpon");
-            dependentUponElement.SetValue(resourceFileName);
-            compileElement.Add(dependentUponElement);
 
             return compileElement;
         }
 
-        private static bool TryGenerateResourceFile(string resourceFile, string @namespace, bool internalize)
+        private static void GenerateResourceHelper(string resourceFile, string @namespace, bool internalize)
         {
             var resourceData = GetResourceData(resourceFile).ToList();
+            if (!resourceData.Any())
+            {
+                return;
+            }
 
             var resourceDirectory = Path.GetDirectoryName(resourceFile);
-
             if (string.IsNullOrEmpty(resourceDirectory))
             {
-                return false;
+                return;
             }
 
             var resourceFileName = Path.GetFileNameWithoutExtension(resourceFile);
@@ -170,8 +167,6 @@ namespace ResourceHelperGenerator
             {
                 TemplateRenderer.RenderTemplate(writer, templateModel);
             }
-
-            return true;
         }
 
         private static IEnumerable<ResourceData> GetResourceData(string resourceFile)
