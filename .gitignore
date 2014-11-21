@@ -76,6 +76,9 @@ ipch/
 *.vsp
 *.vspx
 
+# GhostDoc
+*.GhostDoc.xml
+
 # TFS 2012 Local Workspace
 $tf/
 
