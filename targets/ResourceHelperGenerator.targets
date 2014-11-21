@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Specify where tasks are implemented. -->
+  <UsingTask AssemblyFile="$(MSBuildThisFileDirectory)..\tools\ResourceHelperGenerator.dll" TaskName="GenerateResourceHelpers"/>
+
+  <PropertyGroup>
+    <BuildDependsOn>GenerateResourceHelpers;$(BuildDependsOn)</BuildDependsOn>
+  </PropertyGroup>
+
+  <!-- Define target: GenerateResourceHelpers -->
+  <Target Name="GenerateResourceHelpers">
+    <ItemGroup>
+      <ResourceToGenerate Include="Properties\*.resx" />
+    </ItemGroup>
+    <GenerateResourceHelpers Resources="@(ResourceToGenerate)" Namespace="$(RootNamespace)" ProjectFile="$(MSBuildProjectFullPath)" />
+  </Target>
+</Project>
