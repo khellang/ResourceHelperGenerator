@@ -60,10 +60,20 @@ namespace ResourceHelperGenerator
             writer.Indent--;
         }
 
-        private static void WriteFields(this TextWriter writer, TemplateModel model)
+        private static void WriteFields(this IndentedTextWriter writer, TemplateModel model)
         {
-            writer.WriteLine(@"private static readonly ResourceManager ResourceManager
-            = new ResourceManager(""{0}.{1}"", typeof({1}).Assembly);", model.ProjectName, model.FileName);
+            writer.WriteLine("private static readonly ResourceManager ResourceManager");
+            writer.Indent -= 2;
+            writer.WriteLine("#if NO_TYPE_INFO");
+            writer.Indent += 3;
+            writer.WriteLine("= new ResourceManager(\"{0}.{1}\", typeof({1}).Assembly);", model.ProjectName, model.FileName);
+            writer.Indent -= 3;
+            writer.WriteLine("#else");
+            writer.Indent += 3;
+            writer.WriteLine("= new ResourceManager(\"{0}.{1}\", typeof({1}).GetTypeInfo().Assembly);", model.ProjectName, model.FileName);
+            writer.Indent -= 3;
+            writer.WriteLine("#endif");
+            writer.Indent += 2;
         }
 
         private static void WriteResource(this IndentedTextWriter writer, TemplateModel model, ResourceData data)
