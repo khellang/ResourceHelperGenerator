@@ -39,7 +39,7 @@ namespace ResourceHelperGenerator
         private static void WriteClass(this IndentedTextWriter writer, TemplateModel model)
         {
             writer.Indent++;
-            writer.WriteUsings("System.Diagnostics", "System.Globalization", "System.Reflection", "System.Resources");
+            writer.WriteUsings("System", "System.Diagnostics", "System.Globalization", "System.Reflection", "System.Resources");
             writer.WriteEmptyLine();
             writer.WriteLine("{0} static class {1}", model.Internalize ? "internal" : "public", GetValidIdentifier(model.FileName));
             writer.WriteLine("{");
