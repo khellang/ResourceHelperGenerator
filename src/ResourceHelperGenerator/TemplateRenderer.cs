@@ -154,7 +154,7 @@ namespace ResourceHelperGenerator
             writer.WriteLine("{0} static string {1}({2})", model.Internalize ? "internal" : "public", GetValidIdentifier(data.Name), data.Parameters);
             writer.WriteLine("{");
             writer.Indent++;
-            writer.WriteLine(@"return string.Format(CultureInfo.CurrentCulture, GetString(""{0}""{1}), {2});", data.Name, formatArguments, data.ArgumentNames);
+            writer.WriteLine("return string.Format(CultureInfo.CurrentCulture, GetString(\"{0}\"{1}), {2});", data.Name, formatArguments, data.ArgumentNames);
             writer.Indent--;
             writer.WriteLine("}");
         }
@@ -164,7 +164,7 @@ namespace ResourceHelperGenerator
             writer.WriteLine("{0} static string {1}", model.Internalize ? "internal" : "public", GetValidIdentifier(data.Name));
             writer.WriteLine("{");
             writer.Indent++;
-            writer.WriteLine(@"get {{ return GetString(""{0}""); }}", data.Name);
+            writer.WriteLine("get {{ return GetString(\"{0}\"); }}", data.Name);
             writer.Indent--;
             writer.WriteLine("}");
         }
@@ -177,7 +177,12 @@ namespace ResourceHelperGenerator
             writer.Indent++;
             writer.WriteLine("var value = ResourceManager.GetString(name);");
             writer.WriteEmptyLine();
-            writer.WriteLine("Debug.Assert(value != null);");
+            writer.WriteLine("if (value == null)");
+            writer.WriteLine("{");
+            writer.Indent++;
+            writer.WriteLine("throw new Exception(string.Format(\"Value for key '{0}' was null.\", name));");
+            writer.Indent--;
+            writer.WriteLine("}");
             writer.WriteEmptyLine();
             writer.WriteLine("if (formatterNames != null)");
             writer.WriteLine("{");
@@ -185,7 +190,7 @@ namespace ResourceHelperGenerator
             writer.WriteLine("for (var i = 0; i < formatterNames.Length; i++)");
             writer.WriteLine("{");
             writer.Indent++;
-            writer.WriteLine(@"value = value.Replace(""{"" + formatterNames[i] + ""}"", ""{"" + i + ""}"");");
+            writer.WriteLine("value = value.Replace(\"{\" + formatterNames[i] + \"}\", \"{\" + i + \"}\");");
             writer.Indent--;
             writer.WriteLine("}");
             writer.Indent--;
