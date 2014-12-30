@@ -33,7 +33,7 @@ namespace ResourceHelperGenerator
 
         private static void WriteNamespace(this TextWriter writer, string @namespace)
         {
-            writer.WriteLine("namespace {0}.Properties", GetValidIdentifier(@namespace));
+            writer.WriteLine("namespace {0}", GetValidIdentifier(@namespace));
         }
 
         private static void WriteClass(this IndentedTextWriter writer, TemplateModel model)
