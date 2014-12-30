@@ -33,7 +33,7 @@ namespace ResourceHelperGenerator
 
         private static void WriteNamespace(this TextWriter writer, string @namespace)
         {
-            writer.WriteLine("namespace {0}", GetValidIdentifier(@namespace));
+            writer.WriteLine("namespace {0}.Properties", GetValidIdentifier(@namespace));
         }
 
         private static void WriteClass(this IndentedTextWriter writer, TemplateModel model)
@@ -66,11 +66,11 @@ namespace ResourceHelperGenerator
             writer.Indent -= 2;
             writer.WriteLine("#if NO_TYPE_INFO");
             writer.Indent += 3;
-            writer.WriteLine("= new ResourceManager(\"{0}.{1}\", typeof({1}).Assembly);", model.ProjectName, model.FileName);
+            writer.WriteLine("= new ResourceManager(\"{0}.Properties.{1}\", typeof({1}).Assembly);", model.ProjectName, model.FileName);
             writer.Indent -= 3;
             writer.WriteLine("#else");
             writer.Indent += 3;
-            writer.WriteLine("= new ResourceManager(\"{0}.{1}\", typeof({1}).GetTypeInfo().Assembly);", model.ProjectName, model.FileName);
+            writer.WriteLine("= new ResourceManager(\"{0}.Properties.{1}\", typeof({1}).GetTypeInfo().Assembly);", model.ProjectName, model.FileName);
             writer.Indent -= 3;
             writer.WriteLine("#endif");
             writer.Indent += 2;
