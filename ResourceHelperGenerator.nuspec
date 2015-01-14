@@ -8,10 +8,11 @@
     <owners>Kristian Hellang</owners>
     <licenseUrl>https://raw.githubusercontent.com/khellang/ResourceHelperGenerator/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/khellang/ResourceHelperGenerator</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/khellang/ResourceHelperGenerator/master/etc/generator-icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>An MSBuild task that generates a strongly typed helper class for resource files with support for string formatting.</description>
     <developmentDependency>true</developmentDependency>
-    <copyright>Copyright © Kristian Hellang 2014</copyright>
+    <copyright>Copyright © Kristian Hellang 2015</copyright>
     <tags>resource generator strongly typed</tags>
   </metadata>
   <files>
