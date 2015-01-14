@@ -28,8 +28,6 @@ namespace ResourceHelperGenerator
 
         public string Namespace { get; set; }
 
-        public bool Internalize { get; set; }
-
         public override bool Execute()
         {
             try
@@ -56,7 +54,7 @@ namespace ResourceHelperGenerator
                 {
                     Log.LogMessage("Generating helper for '{0}'...", Path.GetFileName(resourceFile));
 
-                    GenerateResourceHelper(resourceFile, Namespace, Internalize);
+                    GenerateResourceHelper(resourceFile, Namespace);
 
                     var hasAddedFiles = AddDesignerFileToProject(document, resourceFile);
 
@@ -142,7 +140,7 @@ namespace ResourceHelperGenerator
             return compileElement;
         }
 
-        private static void GenerateResourceHelper(string resourceFile, string @namespace, bool internalize)
+        private static void GenerateResourceHelper(string resourceFile, string @namespace)
         {
             var resourceData = GetResourceData(resourceFile).ToList();
             if (!resourceData.Any())
@@ -158,7 +156,7 @@ namespace ResourceHelperGenerator
 
             var resourceFileName = Path.GetFileNameWithoutExtension(resourceFile);
 
-            var templateModel = new TemplateModel(@namespace, resourceFileName, resourceData, internalize);
+            var templateModel = new TemplateModel(@namespace, resourceFileName, resourceData);
 
             var designerFilePath = Path.Combine(resourceDirectory, string.Concat(resourceFileName, ".Designer.cs"));
 

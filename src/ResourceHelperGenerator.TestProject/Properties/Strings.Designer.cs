@@ -3,12 +3,19 @@
 namespace ResourceGenerator.TestProject
 {
     using System;
+    using System.CodeDom.Compiler;
     using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
     using System.Resources;
 
-    public static class Strings
+    [GeneratedCode("ResourceHelperGenerator", "0.3.0")]
+#if RESOURCE_HELPER_INTERNAL
+    internal
+#else
+    public
+#endif
+    static class Strings
     {
         private static readonly ResourceManager ResourceManager
             = new ResourceManager("ResourceGenerator.TestProject.Properties.Strings", GetAssembly(typeof(Strings)));
