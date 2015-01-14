@@ -12,6 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "targets", "targets", "{CCE6
 		targets\ResourceHelperGenerator.targets = targets\ResourceHelperGenerator.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{7625E0B1-95AE-4FFA-B43D-3C023F583B23}"
+	ProjectSection(SolutionItems) = preProject
+		ResourceHelperGenerator.nuspec = ResourceHelperGenerator.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

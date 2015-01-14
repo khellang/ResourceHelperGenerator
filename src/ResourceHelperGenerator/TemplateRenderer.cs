@@ -50,29 +50,28 @@ namespace ResourceHelperGenerator
             writer.WriteFields(model);
             foreach (var resourceData in model.ResourceData)
             {
+                writer.WriteEmptyLine();
                 writer.WriteResource(model, resourceData);
             }
+            writer.WriteEmptyLine();
             writer.WriteGetStringMethod();
-            writer.WriteGetTypeInfoMethod();
+            writer.WriteEmptyLine();
+            writer.WriteGetAssemblyMethod();
         }
 
         private static void WriteFields(this IndentedTextWriter writer, TemplateModel model)
         {
             writer.WriteLine("private static readonly ResourceManager ResourceManager");
             writer.Indent++;
-            writer.WriteLine("= new ResourceManager(\"{0}.Properties.{1}\", typeof({1}).GetTypeInfo().Assembly);", model.ProjectName, model.FileName);
+            writer.WriteLine("= new ResourceManager(\"{0}.Properties.{1}\", GetAssembly(typeof({1})));", model.ProjectName, model.FileName);
             writer.Indent--;
         }
 
         private static void WriteResource(this IndentedTextWriter writer, TemplateModel model, ResourceData data)
         {
-            writer.WriteEmptyLine();
+            writer.WriteHeader(data);
 
-            var isFormatMethod = data.Arguments.Any();
-
-            writer.WriteHeader(data, isFormatMethod);
-
-            if (isFormatMethod)
+            if (data.Arguments.Any())
             {
                 writer.WriteFormatMethod(model, data);
             }
@@ -82,9 +81,9 @@ namespace ResourceHelperGenerator
             }
         }
 
-        private static void WriteHeader(this TextWriter writer, ResourceData data, bool isFormatMethod)
+        private static void WriteHeader(this TextWriter writer, ResourceData data)
         {
-            if (isFormatMethod)
+            if (data.Arguments.Any())
             {
                 writer.WriteSummaryTag(data.Value, data.Comment);
             }
@@ -161,7 +160,6 @@ namespace ResourceHelperGenerator
 
         private static void WriteGetStringMethod(this IndentedTextWriter writer)
         {
-            writer.WriteEmptyLine();
             using (writer.WriteBlock("private static string GetString(string name, params string[] formatterNames)"))
             {
                 writer.WriteLine("var value = ResourceManager.GetString(name);");
@@ -183,15 +181,16 @@ namespace ResourceHelperGenerator
             }
         }
 
-        private static void WriteGetTypeInfoMethod(this IndentedTextWriter writer)
+        private static void WriteGetAssemblyMethod(this IndentedTextWriter writer)
         {
-            writer.WriteEmptyLine();
-            writer.WriteConditional("#if !NETFX_CORE");
-            using (writer.WriteBlock("private static Type GetTypeInfo(this Type type)"))
+            using (writer.WriteBlock("private static Assembly GetAssembly(Type type)"))
             {
-                writer.WriteLine("return type;");
+                writer.WriteConditional("#if NETFX_CORE");
+                writer.WriteLine("return type.GetTypeInfo().Assembly;");
+                writer.WriteConditional("#else");
+                writer.WriteLine("return type.Assembly;");
+                writer.WriteConditional("#endif");
             }
-            writer.WriteConditional("#endif");
         }
 
         private static void WriteConditional(this IndentedTextWriter writer, string conditional)

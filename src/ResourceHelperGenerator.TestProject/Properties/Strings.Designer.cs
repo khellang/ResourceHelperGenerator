@@ -11,7 +11,7 @@ namespace ResourceGenerator.TestProject
     public static class Strings
     {
         private static readonly ResourceManager ResourceManager
-            = new ResourceManager("ResourceGenerator.TestProject.Properties.Strings", typeof(Strings).GetTypeInfo().Assembly);
+            = new ResourceManager("ResourceGenerator.TestProject.Properties.Strings", GetAssembly(typeof(Strings)));
 
         /// <summary>
         /// The argument '{argumentName}' cannot be null.
@@ -49,11 +49,13 @@ namespace ResourceGenerator.TestProject
             return value;
         }
 
-#if !NETFX_CORE
-        private static Type GetTypeInfo(this Type type)
+        private static Assembly GetAssembly(Type type)
         {
-            return type;
-        }
+#if NETFX_CORE
+            return type.GetTypeInfo().Assembly;
+#else
+            return type.Assembly;
 #endif
+        }
     }
 }
