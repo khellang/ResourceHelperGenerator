@@ -2,6 +2,7 @@
 
 namespace ResourceGenerator.TestProject
 {
+    using System;
     using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
@@ -10,7 +11,7 @@ namespace ResourceGenerator.TestProject
     public static class Strings
     {
         private static readonly ResourceManager ResourceManager
-            = new ResourceManager("ResourceGenerator.TestProject.Strings", typeof(Strings).Assembly);
+            = new ResourceManager("ResourceGenerator.TestProject.Properties.Strings", typeof(Strings).GetTypeInfo().Assembly);
 
         /// <summary>
         /// The argument '{argumentName}' cannot be null.
@@ -32,7 +33,10 @@ namespace ResourceGenerator.TestProject
         {
             var value = ResourceManager.GetString(name);
 
-            Debug.Assert(value != null);
+            if (value == null)
+            {
+                throw new Exception(string.Format("Value for key '{0}' was null.", name));
+            }
 
             if (formatterNames != null)
             {
@@ -44,5 +48,12 @@ namespace ResourceGenerator.TestProject
 
             return value;
         }
+
+#if !NETFX_CORE
+        private static Type GetTypeInfo(this Type type)
+        {
+            return type;
+        }
+#endif
     }
 }
