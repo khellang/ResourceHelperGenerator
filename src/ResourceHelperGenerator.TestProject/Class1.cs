@@ -1,4 +1,4 @@
-﻿namespace ResourceGenerator.TestProject
+﻿namespace MyCompany.AwesomeApp
 {
     public class Class1
     {

@@ -4,7 +4,7 @@
 #define RESOURCE_HELPER_TYPEINFO
 #endif
 
-namespace ResourceGenerator.TestProject
+namespace MyCompany.AwesomeApp
 {
     using System;
     using System.CodeDom.Compiler;
@@ -22,7 +22,7 @@ namespace ResourceGenerator.TestProject
     static class Strings
     {
         private static readonly ResourceManager ResourceManager
-            = new ResourceManager("ResourceGenerator.TestProject.Properties.Strings", GetAssembly(typeof(Strings)));
+            = new ResourceManager("MyCompany.AwesomeApp.Properties.Strings", GetAssembly(typeof(Strings)));
 
         /// <summary>
         /// The argument '{argumentName}' cannot be null.
