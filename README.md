@@ -25,15 +25,22 @@ The following file, `Strings.Designer.cs` will be generated and placed under the
 namespace MyCompany.AwesomeApp
 {
     using System;
+    using System.CodeDom.Compiler;
     using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
     using System.Resources;
 
-    public static class Strings
+    [GeneratedCode("ResourceHelperGenerator", "0.3.0")]
+#if RESOURCE_HELPER_INTERNAL
+    internal
+#else
+    public
+#endif
+    static class Strings
     {
         private static readonly ResourceManager ResourceManager
-            = new ResourceManager("MyCompany.AwesomeApp.Properties.Strings", typeof(Strings).GetTypeInfo().Assembly);
+            = new ResourceManager("MyCompany.AwesomeApp.Properties.Strings", GetAssembly(typeof(Strings)));
 
         /// <summary>
         /// The argument '{argumentName}' cannot be null.
@@ -71,12 +78,14 @@ namespace MyCompany.AwesomeApp
             return value;
         }
 
-#if !NETFX_CORE
-        private static Type GetTypeInfo(this Type type)
+        private static Assembly GetAssembly(Type type)
         {
-            return type;
-        }
+#if NETFX_CORE
+            return type.GetTypeInfo().Assembly;
+#else
+            return type.Assembly;
 #endif
+        }
     }
 }
 ```
