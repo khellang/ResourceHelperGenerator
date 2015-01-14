@@ -24,6 +24,7 @@ The following file, `Strings.Designer.cs` will be generated and placed under the
 
 namespace MyCompany.AwesomeApp
 {
+    using System;
     using System.Diagnostics;
     using System.Globalization;
     using System.Reflection;
@@ -32,7 +33,7 @@ namespace MyCompany.AwesomeApp
     public static class Strings
     {
         private static readonly ResourceManager ResourceManager
-            = new ResourceManager("MyCompany.AwesomeApp.Strings", typeof(Strings).Assembly);
+            = new ResourceManager("MyCompany.AwesomeApp.Properties.Strings", typeof(Strings).GetTypeInfo().Assembly);
 
         /// <summary>
         /// The argument '{argumentName}' cannot be null.
@@ -54,7 +55,10 @@ namespace MyCompany.AwesomeApp
         {
             var value = ResourceManager.GetString(name);
 
-            Debug.Assert(value != null);
+            if (value == null)
+            {
+                throw new Exception(string.Format("Value for key '{0}' was null.", name));
+            }
 
             if (formatterNames != null)
             {
@@ -66,6 +70,13 @@ namespace MyCompany.AwesomeApp
 
             return value;
         }
+
+#if !NETFX_CORE
+        private static Type GetTypeInfo(this Type type)
+        {
+            return type;
+        }
+#endif
     }
 }
 ```
