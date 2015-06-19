@@ -61,12 +61,14 @@ namespace ResourceHelperGenerator
                     shouldSave = shouldSave || hasAddedFiles;
                 }
 
-                if (shouldSave)
+                if (!shouldSave)
                 {
-                    new FileInfo(ProjectFile).IsReadOnly = false;
-
-                    document.Save(ProjectFile);
+                    return true;
                 }
+
+                new FileInfo(ProjectFile).IsReadOnly = false;
+
+                document.Save(ProjectFile);
 
                 return true;
             }
