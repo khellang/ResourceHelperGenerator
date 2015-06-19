@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ResourceHelperGenerator</id>
-    <version>0.3.1</version>
+    <version>0.3.1-fixed</version>
     <title>ResourceHelperGenerator</title>
     <authors>Kristian Hellang</authors>
     <owners>Kristian Hellang</owners>

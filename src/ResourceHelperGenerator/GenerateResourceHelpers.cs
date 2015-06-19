@@ -63,6 +63,8 @@ namespace ResourceHelperGenerator
 
                 if (shouldSave)
                 {
+                    new FileInfo(ProjectFile).IsReadOnly = false;
+
                     document.Save(ProjectFile);
                 }
 
@@ -159,6 +161,12 @@ namespace ResourceHelperGenerator
             var templateModel = new TemplateModel(@namespace, resourceFileName, resourceData);
 
             var designerFilePath = Path.Combine(resourceDirectory, string.Concat(resourceFileName, ".Designer.cs"));
+
+            var designerFile = new FileInfo(designerFilePath);
+            if (designerFile.Exists)
+            {
+                designerFile.IsReadOnly = false;
+            }
 
             using (var stream = File.Create(designerFilePath))
             using (var writer = new StreamWriter(stream))
