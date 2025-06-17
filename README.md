@@ -99,3 +99,11 @@ The first time this happens, the task will modify your project file (to add the 
 ## Internalized Helper Class
 
 If you want to internalize the helper class, you must add the `RESOURCE_HELPER_INTERNAL` conditional compilation symbol in the project's build configuration.
+
+## Sponsors
+
+[Entity Framework Extensions](https://entityframework-extensions.net/?utm_source=khellang&utm_medium=ResourceHelperGenerator) and [Dapper Plus](https://dapper-plus.net/?utm_source=khellang&utm_medium=ResourceHelperGenerator) are major sponsors and proud to contribute to the development of ResourceHelperGenerator.
+
+[![Entity Framework Extensions](https://raw.githubusercontent.com/khellang/khellang/refs/heads/master/.github/entity-framework-extensions-sponsor.png)](https://entityframework-extensions.net/bulk-insert?utm_source=khellang&utm_medium=ResourceHelperGenerator)
+
+[![Dapper Plus](https://raw.githubusercontent.com/khellang/khellang/refs/heads/master/.github/dapper-plus-sponsor.png)](https://dapper-plus.net/bulk-insert?utm_source=khellang&utm_medium=ResourceHelperGenerator)
